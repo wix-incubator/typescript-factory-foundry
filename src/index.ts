@@ -1,3 +1,3 @@
-import Counter from './counter';
+import { generateBuilders } from './builderGenerator';
 
-export default new Counter();
+export { generateBuilders };

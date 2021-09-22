@@ -12,3 +12,4 @@ test/e2e/screenshots
 .env*.local
 .idea
 .vscode
+src/__tests__/output

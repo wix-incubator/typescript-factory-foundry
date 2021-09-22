@@ -18,11 +18,10 @@
   },
   "scripts": {
     "build": "yoshi-library build",
-    "start": "yoshi-library start",
     "test": "yoshi-library test",
+    "test:watch": "yoshi-library test --watch",
     "lint": "yoshi-library lint",
-    "posttest": "npm run lint",
-    "example": "npm start --prefix example"
+    "posttest": "npm run lint"
   },
   "husky": {
     "hooks": {
@@ -33,7 +32,8 @@
     "*.{js,ts}": "npm run lint"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0"
+    "@babel/runtime": "^7.0.0",
+    "ts-essentials": "^8.1.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",
@@ -44,6 +44,7 @@
     "husky": "~4.2.1",
     "lint-staged": "^10.0.7",
     "ts-jest": "^26.4.4",
+    "ts-morph": "^12.0.0",
     "typescript": "~4.1.2"
   },
   "jest": {
