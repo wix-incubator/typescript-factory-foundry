@@ -12,6 +12,12 @@ describe('Builder Generator', () => {
     cleanOutput(outputFolder);
 
     await generateBuilders(simpleBuildersExample, outputFolder);
+    expect(fs.readdirSync(outputFolder)).toEqual([
+      'ScalarsBuilder.ts',
+      'SimpleExampleBuilder.ts',
+      'index.ts',
+      'simpleTypes.ts',
+    ]);
 
     const indexFile = fs.readFileSync(`${outputFolder}/index.ts`, 'utf8');
     const ScalarsBuilderFile = fs.readFileSync(
