@@ -1,0 +1,30 @@
+{
+  "name": "example-for-typescript-builders-generator",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "yoshi start",
+    "build": "yoshi build"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "react": "16.12.0",
+    "react-dom": "16.12.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.2",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.7.20",
+    "@types/react-dom": "^16.0.11",
+    "@wix/yoshi": "^5.0.0",
+    "@wix/yoshi-style-dependencies": "^5.0.0"
+  },
+  "jest": {
+    "preset": "@wix/jest-yoshi-preset"
+  },
+  "yoshi": {
+    "projectType": "app",
+    "entry": "client.tsx"
+  }
+}

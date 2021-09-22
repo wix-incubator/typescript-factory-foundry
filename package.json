@@ -1,0 +1,72 @@
+{
+  "name": "@wix/typescript-builders-generator",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "author": {
+    "name": "ori p",
+    "email": "oripi@wix.com"
+  },
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.dev.wixpress.com/",
+    "versionBumpStrategy": "minor"
+  },
+  "scripts": {
+    "build": "yoshi-library build",
+    "start": "yoshi-library start",
+    "test": "yoshi-library test",
+    "lint": "yoshi-library lint",
+    "posttest": "npm run lint",
+    "example": "npm start --prefix example"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": "npm run lint"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.0.0",
+    "@wix/jest-yoshi-preset": "^5.0.0",
+    "@wix/yoshi-flow-library": "^5.0.0",
+    "express": "^4.17.1",
+    "husky": "~4.2.1",
+    "lint-staged": "^10.0.7",
+    "ts-jest": "^26.4.4",
+    "typescript": "~4.1.2"
+  },
+  "jest": {
+    "preset": "@wix/jest-yoshi-preset"
+  },
+  "yoshiFlowLibrary": {
+    "bundle": {
+      "library": "counter"
+    }
+  },
+  "eslintConfig": {
+    "extends": "@wix/eslint-config-yoshi"
+  },
+  "wix": {
+    "artifact": {
+      "groupId": "com.wixpress",
+      "artifactId": "typescript-builders-generator",
+      "targets": {
+        "static": true
+      }
+    }
+  },
+  "wallaby": {
+    "autoDetect": true
+  }
+}
