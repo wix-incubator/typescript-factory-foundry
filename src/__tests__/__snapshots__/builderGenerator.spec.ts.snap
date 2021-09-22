@@ -280,32 +280,43 @@ export type NestedTypeExample = {
 `;
 
 exports[`Builder Generator should generate builders for interfaces and types 5`] = `
-"export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  BigDecimal: number;
-  Json: any;
-  Long: number;
-};
+"/* eslint-disable */
+import { DeepPartial } from 'ts-essentials';
+import * as SchemaTypes from './simpleInterfacesAndTypes';
 
-export interface SimpleExample {
-  prop1: Scalars['Boolean'];
-  prop2: number;
-  prop3: {
-    innerProp: string;
-  };
+export class NestedTypeExampleBuilder {
+  constructor(private readonly obj = {} as DeepPartial<SchemaTypes.NestedTypeExample>) {
+  }
+
+  public withNestedProp1<P extends DeepPartial<SchemaTypes.SimpleExample>>(val: P): NestedTypeExampleBuilder {
+    this.obj.nestedProp1 = val;
+    return this;
+  }
+
+  public withNestedProp2<P extends DeepPartial<{ simple: SchemaTypes.SimpleExample; }>>(val: P): NestedTypeExampleBuilder {
+    this.obj.nestedProp2 = val;
+    return this;
+  }
+
+  public withScalar1<P extends DeepPartial<SchemaTypes.Scalars>>(val: P): NestedTypeExampleBuilder {
+    this.obj.scalar1 = val;
+    return this;
+  }
+
+  public includeTypename() {
+    // @ts-ignore
+    this.obj.__typename = 'NestedTypeExample';
+    return this;
+  }
+
+  public get(): SchemaTypes.NestedTypeExample {
+    return this.obj as SchemaTypes.NestedTypeExample;
+  }
 }
 
-export type NestedTypeExample = {
-  nestedProp1: SimpleExample;
-  nestedProp2: {
-    simple: SimpleExample;
-  };
-  scalar1: Scalars;
-};
+export function aNestedTypeExampleBuilder<O extends DeepPartial<SchemaTypes.NestedTypeExample> = {}>(baseObj?: O): NestedTypeExampleBuilder {
+  return new NestedTypeExampleBuilder(baseObj ?? {});
+}
 "
 `;
 

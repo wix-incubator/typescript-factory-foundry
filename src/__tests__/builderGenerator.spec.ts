@@ -12,16 +12,10 @@ describe('Builder Generator', () => {
     cleanOutput(outputFolder);
 
     await generateBuilders(simpleBuildersExample, outputFolder);
-    expect(fs.readdirSync(outputFolder)).toEqual([
-      'ScalarsBuilder.ts',
-      'SimpleExampleBuilder.ts',
-      'index.ts',
-      'simpleTypes.ts',
-    ]);
 
     const indexFile = fs.readFileSync(`${outputFolder}/index.ts`, 'utf8');
     const ScalarsBuilderFile = fs.readFileSync(
-      `${outputFolder}/scalarsBuilder.ts`,
+      `${outputFolder}/ScalarsBuilder.ts`,
       'utf8',
     );
     const SimpleExampleBuilderFile = fs.readFileSync(
@@ -57,7 +51,7 @@ describe('Builder Generator', () => {
 
     const indexFile = fs.readFileSync(`${outputFolder}/index.ts`, 'utf8');
     const ScalarsBuilderFile = fs.readFileSync(
-      `${outputFolder}/scalarsBuilder.ts`,
+      `${outputFolder}/ScalarsBuilder.ts`,
       'utf8',
     );
     const SimpleExampleBuilderFile = fs.readFileSync(
@@ -96,7 +90,7 @@ describe('Builder Generator', () => {
 
     const indexFile = fs.readFileSync(`${outputFolder}/index.ts`, 'utf8');
     const ScalarsBuilderFile = fs.readFileSync(
-      `${outputFolder}/scalarsBuilder.ts`,
+      `${outputFolder}/ScalarsBuilder.ts`,
       'utf8',
     );
     const SimpleExampleBuilderFile = fs.readFileSync(
@@ -108,7 +102,7 @@ describe('Builder Generator', () => {
       'utf8',
     );
     const NestedTypeExampleBuilderFile = fs.readFileSync(
-      `${outputFolder}/simpleInterfacesAndTypes.ts`,
+      `${outputFolder}/NestedTypeExampleBuilder.ts`,
       'utf8',
     );
 
