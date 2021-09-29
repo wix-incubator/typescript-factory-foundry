@@ -74,7 +74,6 @@ Then by running the following command from `package.json` file:
 We'll receive the following new files:
 ```bash
 src
-├── ..
 ├── types.ts
 ├── generated
 │   ├── types.ts
