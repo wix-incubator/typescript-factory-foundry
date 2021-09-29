@@ -166,7 +166,7 @@ export class ScalarsBuilder {
   }
 
   public get(): SchemaTypes.Scalars {
-    return this.obj as SchemaTypes.Scalars;
+    return Object.assign({}, this.obj) as SchemaTypes.Scalars;
   }
 }
 
@@ -206,7 +206,7 @@ export class SimpleExampleBuilder {
   }
 
   public get(): SchemaTypes.SimpleExample {
-    return this.obj as SchemaTypes.SimpleExample;
+    return Object.assign({}, this.obj) as SchemaTypes.SimpleExample;
   }
 }
 

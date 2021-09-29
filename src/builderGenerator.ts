@@ -179,7 +179,7 @@ function generateBuilderFunc(
     name: `get`,
     scope: Scope.Public,
     returnType: `SchemaTypes.${typeName}`,
-    statements: `return this.${objName} as SchemaTypes.${typeName};`,
+    statements: `return Object.assign({}, this.${objName}) as SchemaTypes.${typeName};`,
   });
 
   const builderFunc: FunctionDeclarationStructure = {
