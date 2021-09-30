@@ -2,6 +2,7 @@
   "name": "typescript-builders-generator",
   "version": "1.0.0",
   "license": "UNLICENSED",
+  "private": false,
   "author": {
     "name": "ori p",
     "email": "oripi@wix.com"
@@ -16,7 +17,7 @@
     "dist"
   ],
   "publishConfig": {
-    "registry": "https://npm.dev.wixpress.com/",
+    "registry": "https://registry.npmjs.org/",
     "versionBumpStrategy": "minor"
   },
   "scripts": {
