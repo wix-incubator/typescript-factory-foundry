@@ -119,6 +119,81 @@ describe('Builder Generator', () => {
     expect(simpleInterfacesAndTypesFile).toMatchSnapshot();
     expect(NestedTypeExampleBuilderFile).toMatchSnapshot();
   });
+
+  it('should generate builders for empty type', async () => {
+    const simpleBuildersExample = path.join(
+      __dirname,
+      './examples/ignoreEmptyTypes.ts',
+    );
+    const outputFolder = path.join(__dirname, 'output/ignore-empty-types');
+    cleanOutput(outputFolder);
+
+    await generateBuilders(simpleBuildersExample, outputFolder);
+
+    const indexFile = fs.readFileSync(`${outputFolder}/index.ts`, 'utf8');
+    const SimpleExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/SimpleExampleBuilder.ts`,
+      'utf8',
+    );
+
+    expect(fs.readdirSync(outputFolder)).toEqual([
+      'SimpleExampleBuilder.ts',
+      'ignoreEmptyTypes.ts',
+      'index.ts',
+    ]);
+    expect(indexFile).toMatchSnapshot();
+    expect(SimpleExampleBuilderFile).toMatchSnapshot();
+  });
+
+  it('should generate builders for union type', async () => {
+    const simpleBuildersExample = path.join(
+      __dirname,
+      './examples/ignoreUnionTypes.ts',
+    );
+    const outputFolder = path.join(__dirname, 'output/ignore-union-types');
+    cleanOutput(outputFolder);
+
+    await generateBuilders(simpleBuildersExample, outputFolder);
+
+    const indexFile = fs.readFileSync(`${outputFolder}/index.ts`, 'utf8');
+    const SimpleExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/SimpleExampleBuilder.ts`,
+      'utf8',
+    );
+
+    expect(fs.readdirSync(outputFolder)).toEqual([
+      'SimpleExampleBuilder.ts',
+      'ignoreUnionTypes.ts',
+      'index.ts',
+    ]);
+    expect(indexFile).toMatchSnapshot();
+    expect(SimpleExampleBuilderFile).toMatchSnapshot();
+  });
+
+  it('should generate builders for types with __typename property', async () => {
+    const simpleBuildersExample = path.join(
+      __dirname,
+      './examples/ignoreTypenameProp.ts',
+    );
+    const outputFolder = path.join(__dirname, 'output/ignore-typename-prop');
+    cleanOutput(outputFolder);
+
+    await generateBuilders(simpleBuildersExample, outputFolder);
+
+    const indexFile = fs.readFileSync(`${outputFolder}/index.ts`, 'utf8');
+    const SimpleExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/SimpleExampleBuilder.ts`,
+      'utf8',
+    );
+
+    expect(fs.readdirSync(outputFolder)).toEqual([
+      'SimpleExampleBuilder.ts',
+      'ignoreTypenameProp.ts',
+      'index.ts',
+    ]);
+    expect(indexFile).toMatchSnapshot();
+    expect(SimpleExampleBuilderFile).toMatchSnapshot();
+  });
 });
 
 function cleanOutput(outputFolder: string) {

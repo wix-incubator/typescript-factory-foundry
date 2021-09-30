@@ -11,7 +11,7 @@ export interface Scalars {
 
 export interface SimpleExample {
   prop1: Scalars['Boolean'];
-  prop2: number;
+  prop2: number[];
   prop3: {
     innerProp: string;
   };

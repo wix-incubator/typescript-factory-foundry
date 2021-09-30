@@ -47,7 +47,7 @@ export async function generateBuilders(
   }[] = [];
 
   const indexFile = project.createSourceFile(
-    path.join(outputFilePath, `index.ts`),
+    path.join(outputFilePath, 'index.ts'),
     undefined,
     {
       overwrite: true,
@@ -158,25 +158,25 @@ function generateBuilderFunc(
       typeParameters: [`P extends ${parametersType}`],
       parameters: [{ name: 'val', type: 'P' }],
       scope: Scope.Public,
-      statements: [`this.obj.${propName} = val;`, `return this;`],
+      statements: [`this.obj.${propName} = val;`, 'return this;'],
     };
     methods.push(method);
   }
 
   methods.push({
     kind: StructureKind.Method,
-    name: `includeTypename`,
+    name: 'includeTypename',
     scope: Scope.Public,
     statements: [
       '// @ts-ignore',
       `this.obj.__typename = '${typeName}';`,
-      `return this;`,
+      'return this;',
     ],
   });
 
   methods.push({
     kind: StructureKind.Method,
-    name: `get`,
+    name: 'get',
     scope: Scope.Public,
     returnType: `SchemaTypes.${typeName}`,
     statements: `return Object.assign({}, this.${objName}) as SchemaTypes.${typeName};`,
@@ -191,7 +191,7 @@ function generateBuilderFunc(
     parameters: [
       {
         name: 'baseObj',
-        type: `O`,
+        type: 'O',
         hasQuestionToken: true,
       },
     ],

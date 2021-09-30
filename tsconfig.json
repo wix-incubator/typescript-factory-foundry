@@ -1,15 +1,11 @@
 {
-  "extends": "@wix/yoshi-flow-library/tsconfig.flow.json",
   "compilerOptions": {
     "rootDir": "src",
+    "declaration": true,
     "outDir": "dist/esm",
     "declarationDir": "dist/types"
   },
   "include": [
     "src"
-  ],
-  "files": [
-    "./src/external-types.d.ts",
-    "./src/test-types.d.ts"
   ]
 }
