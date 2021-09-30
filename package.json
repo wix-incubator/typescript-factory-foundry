@@ -1,7 +1,7 @@
 {
   "name": "@wix/typescript-builders-generator",
   "version": "1.0.0",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "author": {
     "name": "ori p",
     "email": "oripi@wix.com"
