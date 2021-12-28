@@ -4,7 +4,7 @@ This project allows you to generate definitely typed builders based on typescrip
 ## Install
 Install using `npm` or `yarn`:
 ```bash
-npm i --save-dev @wix/typescript-builders-generator
+npm i --save-dev typescript-factory-foundry
 ```
 
 ## Getting Started
@@ -21,7 +21,7 @@ export interface SimpleInterface {
 
 run the command:
 ```bash
-npx @wix/typescript-builders-generator ./src/myTypes.ts ./src/generated
+npx typescript-factory-foundry ./src/myTypes.ts ./src/generated
 ```
 
 and use the generated builders:

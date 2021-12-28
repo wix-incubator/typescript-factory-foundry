@@ -17,7 +17,7 @@ You can use this package either via CLI or by using the `generateBuilders` funct
 
 Generating builders via CLI:
 ```bash
-npx @wix/typescript-builders-generator <full-path-to-ts-file> <full-path-to-output-directory>
+npx typescript-factory-foundry <full-path-to-ts-file> <full-path-to-output-directory>
 ```
 
 Generating builders via `package.json` script:
@@ -27,7 +27,7 @@ Generating builders via `package.json` script:
 
 Generating builders from code:
 ```typescript
-import {generateBuilders} from '@wix/typescript-builders-generator'
+import {generateBuilders} from 'typescript-factory-foundry'
 
 // returns a promise that's resolved when task is finished
 generateBuilders(fullOrRelativePathToTsFile, fullOrRelativePathToOutputDirectory);
