@@ -1,4 +1,4 @@
-# Typescript Builders Generator
+# Typescript Factory Foundry
 This project allows you to generate definitely typed builders based on typescript `interface` and `type`.
 
 ## Install
