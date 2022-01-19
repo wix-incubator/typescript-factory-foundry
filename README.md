@@ -1,7 +1,4 @@
 # Typescript Factory Foundry
-
-[![asciicast](https://asciinema.org/a/462760.svg)](https://asciinema.org/a/462760?autoplay=1&startAt=2)
-
 This project allows you to generate definitely typed builders based on typescript `interface` and `type`.
 
 ## Install
