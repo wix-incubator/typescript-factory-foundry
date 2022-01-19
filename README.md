@@ -1,5 +1,8 @@
 # Typescript Factory Foundry
-This project allows you to generate definitely typed builders based on typescript `interface` and `type`.
+<div style="text-align: center">
+<img src="./docs/img/logo.png" width="300" />
+<div style="font-weight: bold; font-size: 16px">Generate definitely typed builders based on typescript <code> interface</code> and <code>type</code>.</div>
+</div>
 
 ## Install
 Install using `npm` or `yarn`:
