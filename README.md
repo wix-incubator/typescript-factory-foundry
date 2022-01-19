@@ -1,8 +1,11 @@
 # Typescript Factory Foundry
-<div style="text-align: center">
-<img src="./docs/img/logo.png" width="300" />
-<div style="font-weight: bold; font-size: 16px">Generate definitely typed builders based on typescript <code> interface</code> and <code>type</code>.</div>
-</div>
+<p align="center">
+  <img src="./docs/img/logo.png" width="300" />
+</p>
+<p align="center" font-weight="bold">
+  Generate definitely typed builders based on typescript <code> interface</code> and <code>type</code>.
+</p>
+
 
 ## Install
 Install using `npm` or `yarn`:
