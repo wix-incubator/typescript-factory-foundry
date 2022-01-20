@@ -43,4 +43,4 @@ const item = builder.get();
 ```
 
 ## Additional Info
-You can find more explanation about how the library can be used and what kind of problems it can solve [here](./docs/DETAILED_INFO.md)
+You can find more explanation about how the library can be used and what kind of problems it can solve [here](./docs/DETAILED_INFO.md).
