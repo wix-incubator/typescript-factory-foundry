@@ -6,6 +6,8 @@
   Generate definitely typed builders based on typescript <code> interface</code> and <code>type</code>.
 </p>
 
+<img src="./docs/img/demo.gif" alt="fuzzy-search" width="100%" />
+
 
 ## Install
 Install using `npm` or `yarn`:
