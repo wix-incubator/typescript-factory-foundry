@@ -18,22 +18,8 @@ jobs:
       - run: npm ci
       - run: npm test
 
-  version:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Checkout source code'
-        uses: 'actions/checkout@v2'
-      - name: 'Automated Version Bump'
-        id: version-bump
-        uses: 'phips28/gh-action-bump-version@master'
-        with:
-          tag-prefix: 'v'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   publish-npm:
-    needs: [build,version]
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
