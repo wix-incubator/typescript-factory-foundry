@@ -21,16 +21,18 @@ jobs:
   version:
     needs: build
     runs-on: ubuntu-latest
-    if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
     steps:
-      - uses: actions/checkout@v2
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v2'
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - run: git config --global user.name 'Git Bot'
-      - run: git config --global user.email 'ignoreTheMail1231@wix.com'
-      - run: git checkout master
-      - run: npm version patch -m "[RELEASE] %s"
-      - run: git push
+          ref: ${{ github.ref }}
+      - name: 'Automated Version Bump'
+        id: version-bump
+        uses: 'phips28/gh-action-bump-version@master'
+        with:
+          tag-prefix: ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-npm:
     needs: [build,version]
