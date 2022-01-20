@@ -6,7 +6,7 @@
   Generate definitely typed builders based on typescript <code> interface</code> and <code>type</code>.
 </p>
 
-<img src="./docs/img/demo.gif" alt="fuzzy-search" width="100%" />
+<img src="./docs/img/demo.gif" alt="demo video" width="100%" />
 
 
 ## Install
