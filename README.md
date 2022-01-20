@@ -1,12 +1,12 @@
 # Typescript Factory Foundry
 <p align="center">
-  <img src="./docs/img/logo.png" width="300" />
+  <img src="https://github.com/wix-incubator/typescript-builders-generator/blob/master/docs/img/logo.png" width="300" />
 </p>
 <p align="center" font-weight="bold">
   Generate definitely typed builders based on typescript <code> interface</code> and <code>type</code>.
 </p>
 
-<img src="./docs/img/demo.gif" alt="demo video" width="100%" />
+<img src="https://github.com/wix-incubator/typescript-builders-generator/blob/master/docs/img/demo.gif" alt="demo video" width="100%" />
 
 
 ## Install
