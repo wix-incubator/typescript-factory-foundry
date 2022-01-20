@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "declaration": true,
-    "outDir": "dist/esm",
+    "outDir": "dist",
     "declarationDir": "dist/types"
   },
   "include": [
