@@ -18,6 +18,16 @@ jobs:
       - run: npm ci
       - run: npm test
 
+  version:
+    runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: npm version patch -m "[RELEASE] %s"
+      - run: git push
+
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
