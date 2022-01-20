@@ -291,6 +291,7 @@ builder.withProp4(aNestedTypeExampleBuilder().withNestedProp('nested prop').get(
 
 // update builder
 builder.withProp4(aNestedTypeExampleBuilder().withNestedProp('a whole new value').get());
+
 // item with all the initially defined props and the overridden prop4
 const item2 = builder.get();
 ```
