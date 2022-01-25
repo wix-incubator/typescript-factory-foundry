@@ -15,8 +15,9 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 16
-      - run: npm ci
-      - run: npm test
+          cache: yarn
+      - run: yarn run ci
+      - run: yarn run test
 
   publish-npm:
     needs: build
@@ -26,9 +27,10 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 16
+          cache: yarn
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm run build
-      - run: npm publish
+      - run: yarn run ci
+      - run: yarn run build
+      - run: yarn run publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
