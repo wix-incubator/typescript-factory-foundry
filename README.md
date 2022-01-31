@@ -5,8 +5,8 @@
 <p align="center" font-weight="bold">
   Generate definitely typed builders based on typescript <code> interface</code> and <code>type</code>.
 </p>
-<p align="center" font-weight="bold">
-  For more examples check <a href="https://github.com/wix-incubator/typescript-builders-generator/blob/master/docs/DETAILED_INFO.md">this<a/> readme file.
+<p align="center" style="font-weight: 600;">
+  ☝ For more examples check <a href="https://github.com/wix-incubator/typescript-builders-generator/blob/master/docs/DETAILED_INFO.md">this<a/> readme file.
 </p>
 
 
@@ -44,4 +44,4 @@ const item = builder.get();
 ```
 
 ## Additional Info
-You can find more explanation about how the library can be used and what kind of problems it can solve [here](https://github.com/wix-incubator/typescript-builders-generator/blob/master/docs/DETAILED_INFO.md).
+[Here](https://github.com/wix-incubator/typescript-builders-generator/blob/master/docs/DETAILED_INFO.md) you can find a more in-depth explanation of how the library can be used and what kind of problems it can solve.

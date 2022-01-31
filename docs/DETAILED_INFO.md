@@ -1,8 +1,8 @@
 ## Why Builders?
-- Modifying properties is easy - adding or removing properties only affects the code that is calling the corresponding modifying functions, thereby reducing the amount of code that needs to adapt to this change (which is a very common case for DTOs).
+- Modifying properties is easy - adding or removing properties only affects the code that's calling the corresponding modifying functions, thereby reducing the amount of code that needs to adapt to this change (which is a very common case for DTOs).
 - Reusability - builders are easy to define and reuse. Builders can act as a starting template for multiple objects, making them ideal for bulk item generation.
-- strictness - builders restrict modification of properties to existing properties on interface, effectively protecting you from relying on properties that don't exist on the interface and eliminating "magic" properties that may appear in the code.
-- separation of concerns - having a hierarchy of builders makes it easy to split concerns of different data handling in the code.
+- Strictness - builders restrict modification of properties to existing properties on interface, effectively protecting you from relying on properties that don't exist on the interface and eliminating "magic" properties that may appear in the code.
+- Separation of concerns - having a hierarchy of builders makes it easy to split concerns of different data handling in the code.
 
 ## What Are the Common Use Cases?
 - To create mock data for tests.
@@ -20,7 +20,7 @@ Generating builders via CLI:
 npx typescript-factory-foundry <full-path-to-ts-file> <full-path-to-output-directory>
 ```
 
-Generating builders via `package.json` script:
+Generating builders via the `package.json` script:
 ```json
 "generate": "generate-builders <full-or-relative-path-to-ts-file> <full-or-relative-path-to-output-directory>"
 ```
@@ -256,7 +256,7 @@ export function aNestTypeExampleBuilder<O extends DeepPartial<SchemaTypes.NestTy
 }
 ```
 
-## How to use the builders:
+## How to use builders:
 First use the builder function to initialize a builder:
 ```typescript
 const builder = aSimpleExampleBuilder();
