@@ -281,6 +281,7 @@ const itemWithTypename = builder.includeTypename().get();
 This gives you an easy way to reuse builders:
 ```typescript
 const builder = aSimpleExampleBuilder();
+
 builder.withProp1(true);
 builder.withProp2(15).withProp3({innerProp: 'inner prop'});
 builder.withProp4(aNestedTypeExampleBuilder().withNestedProp('nested prop').get());
