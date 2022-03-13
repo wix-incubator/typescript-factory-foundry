@@ -38,6 +38,7 @@
   "dependencies": {
     "@babel/runtime": "^7.16.5",
     "commander": "^8.2.0",
+    "lodash": "^4.17.21",
     "ts-essentials": "^8.1.0",
     "ts-morph": "^12.2.0"
   },
@@ -45,6 +46,7 @@
     "@babel/preset-env": "^7.16.5",
     "@babel/preset-typescript": "^7.16.5",
     "@types/jest": "^26.0.15",
+    "@types/lodash": "^4.14.179",
     "@types/node": "^14.18.3",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",

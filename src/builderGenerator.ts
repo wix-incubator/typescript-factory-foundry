@@ -96,6 +96,11 @@ export async function generateBuilders(
         namespaceImport: 'SchemaTypes',
         moduleSpecifier: `./${fileNameWithoutExtension}`,
       },
+      {
+        kind: StructureKind.ImportDeclaration,
+        namedImports: ['cloneDeep'],
+        moduleSpecifier: 'lodash',
+      },
     ]);
 
     indexFile.addExportDeclaration({
@@ -179,7 +184,7 @@ function generateBuilderFunc(
     name: 'get',
     scope: Scope.Public,
     returnType: `SchemaTypes.${typeName}`,
-    statements: `return Object.assign({}, this.${objName}) as SchemaTypes.${typeName};`,
+    statements: `return cloneDeep(this.obj) as SchemaTypes.${typeName};`,
   });
 
   const builderFunc: FunctionDeclarationStructure = {

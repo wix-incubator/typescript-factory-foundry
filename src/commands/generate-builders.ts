@@ -9,8 +9,8 @@ program
   .description(
     'generate builders for interfaces and types based on a given typescript file',
   )
-  .argument('<source>', 'relative path to input file')
-  .argument('<output>', 'relative path to output directory')
+  .argument('<source>', 'path to input file')
+  .argument('<output>', 'path to output directory')
   .action(processCommand);
 
 async function processCommand(source: string, output: string) {
