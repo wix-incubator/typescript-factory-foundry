@@ -15,9 +15,14 @@ import {
 import * as path from 'path';
 import { copyFile } from 'fs/promises';
 
+export interface BuilderOptions {
+  useNullInitializer?: boolean;
+}
+
 export async function generateBuilders(
   inputFilePath: string,
   outputFilePath: string,
+  options: BuilderOptions = {},
 ): Promise<void> {
   const project = new Project({
     manipulationSettings: {
@@ -56,7 +61,7 @@ export async function generateBuilders(
   );
 
   for (const typeAlias of allTypes) {
-    const { classObj, builderFunc } = generateBuilderFunc(typeAlias);
+    const { classObj, builderFunc } = generateBuilderFunc(typeAlias, options);
     if (classObj && builderFunc) {
       classesAndFactories.push({
         classObj,
@@ -65,7 +70,10 @@ export async function generateBuilders(
     }
   }
   for (const interfaceType of allInterfaces) {
-    const { classObj, builderFunc } = generateBuilderFunc(interfaceType);
+    const { classObj, builderFunc } = generateBuilderFunc(
+      interfaceType,
+      options,
+    );
     if (classObj && builderFunc) {
       classesAndFactories.push({
         classObj,
@@ -121,6 +129,7 @@ export async function generateBuilders(
 
 function generateBuilderFunc(
   typeAlias: TypeAliasDeclaration | InterfaceDeclaration,
+  { useNullInitializer }: BuilderOptions,
 ) {
   const rootType = typeAlias.getType();
 
@@ -203,6 +212,12 @@ function generateBuilderFunc(
     statements: `return new ${className}(baseObj ?? {});`,
   };
 
+  const constructorInitializer = useNullInitializer
+    ? props
+        .filter((prop) => prop.getName() !== '__typename')
+        .map((prop) => `${prop.getName()}: null`)
+        .join(', ')
+    : '';
   const classObj: ClassDeclarationStructure = {
     kind: StructureKind.Class,
     name: className,
@@ -212,7 +227,7 @@ function generateBuilderFunc(
         parameters: [
           {
             name: objName,
-            initializer: `{} as DeepPartial<SchemaTypes.${typeName}>`,
+            initializer: `{${constructorInitializer}} as DeepPartial<SchemaTypes.${typeName}>`,
             isReadonly: true,
             scope: Scope.Private,
           },

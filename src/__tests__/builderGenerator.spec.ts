@@ -194,6 +194,53 @@ describe('Builder Generator', () => {
     expect(indexFile).toMatchSnapshot();
     expect(SimpleExampleBuilderFile).toMatchSnapshot();
   });
+
+  it('should generate builders with null initializer', async () => {
+    const simpleBuildersExample = path.join(
+      __dirname,
+      './examples/simpleInterfacesAndTypes.ts',
+    );
+    const outputFolder = path.join(
+      __dirname,
+      'output/simple-interfaces-and-types-null',
+    );
+    cleanOutput(outputFolder);
+
+    await generateBuilders(simpleBuildersExample, outputFolder, {
+      useNullInitializer: true,
+    });
+
+    const indexFile = fs.readFileSync(`${outputFolder}/index.ts`, 'utf8');
+    const ScalarsBuilderFile = fs.readFileSync(
+      `${outputFolder}/ScalarsBuilder.ts`,
+      'utf8',
+    );
+    const SimpleExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/SimpleExampleBuilder.ts`,
+      'utf8',
+    );
+    const simpleInterfacesAndTypesFile = fs.readFileSync(
+      `${outputFolder}/simpleInterfacesAndTypes.ts`,
+      'utf8',
+    );
+    const NestedTypeExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/NestedTypeExampleBuilder.ts`,
+      'utf8',
+    );
+
+    expect(fs.readdirSync(outputFolder)).toEqual([
+      'NestedTypeExampleBuilder.ts',
+      'ScalarsBuilder.ts',
+      'SimpleExampleBuilder.ts',
+      'index.ts',
+      'simpleInterfacesAndTypes.ts',
+    ]);
+    expect(indexFile).toMatchSnapshot();
+    expect(ScalarsBuilderFile).toMatchSnapshot();
+    expect(SimpleExampleBuilderFile).toMatchSnapshot();
+    expect(simpleInterfacesAndTypesFile).toMatchSnapshot();
+    expect(NestedTypeExampleBuilderFile).toMatchSnapshot();
+  });
 });
 
 function cleanOutput(outputFolder: string) {
