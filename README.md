@@ -43,5 +43,11 @@ const builder = aSimpleInterfaceBuilder().withProp1('my prop').withProp3({innerP
 const item = builder.get();
 ```
 
+## Additional Options
+
+| **Code**           | **Command Line**        | **Description**                                             |
+|--------------------|-------------------------|-------------------------------------------------------------|
+| useNullInitializer | -n, --use-default-nulls | use null as default value in builder properties initializer |
+
 ## Additional Info
 [Here](https://github.com/wix-incubator/typescript-builders-generator/blob/master/docs/DETAILED_INFO.md) you can find a more in-depth explanation of how the library can be used and what kind of problems it can solve.
