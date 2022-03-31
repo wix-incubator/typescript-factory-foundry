@@ -192,6 +192,7 @@ export interface SimpleExample {
 exports[`Builder Generator should generate builders for interfaces and types 1`] = `
 "export * from './ScalarsBuilder';
 export * from './NestedTypeExampleBuilder';
+export * from './ArrayExampleBuilder';
 export * from './SimpleExampleBuilder';
 "
 `;
@@ -332,6 +333,10 @@ export type NestedTypeExample = {
   };
   scalar1: Scalars;
 };
+
+export type ArrayExample = {
+  arrProp: SimpleExample[];
+};
 "
 `;
 
@@ -373,6 +378,38 @@ export class NestedTypeExampleBuilder {
 
 export function aNestedTypeExampleBuilder<O extends DeepPartial<SchemaTypes.NestedTypeExample> = {}>(baseObj?: O): NestedTypeExampleBuilder {
   return new NestedTypeExampleBuilder(baseObj ?? {});
+}
+"
+`;
+
+exports[`Builder Generator should generate builders for interfaces and types 6`] = `
+"/* eslint-disable */
+import { DeepPartial } from 'ts-essentials';
+import * as SchemaTypes from './simpleInterfacesAndTypes';
+import { cloneDeep } from 'lodash';
+
+export class ArrayExampleBuilder {
+  constructor(private readonly obj = {} as DeepPartial<SchemaTypes.ArrayExample>) {
+  }
+
+  public withArrProp<P extends DeepPartial<SchemaTypes.SimpleExample>[]>(val: P): ArrayExampleBuilder {
+    this.obj.arrProp = val;
+    return this;
+  }
+
+  public includeTypename() {
+    // @ts-ignore
+    this.obj.__typename = 'ArrayExample';
+    return this;
+  }
+
+  public get(): SchemaTypes.ArrayExample {
+    return cloneDeep(this.obj) as SchemaTypes.ArrayExample;
+  }
+}
+
+export function aArrayExampleBuilder<O extends DeepPartial<SchemaTypes.ArrayExample> = {}>(baseObj?: O): ArrayExampleBuilder {
+  return new ArrayExampleBuilder(baseObj ?? {});
 }
 "
 `;
@@ -611,6 +648,7 @@ export function aSimpleExampleBuilder<O extends DeepPartial<SchemaTypes.SimpleEx
 exports[`Builder Generator should generate builders with null initializer 1`] = `
 "export * from './ScalarsBuilder';
 export * from './NestedTypeExampleBuilder';
+export * from './ArrayExampleBuilder';
 export * from './SimpleExampleBuilder';
 "
 `;
@@ -751,6 +789,10 @@ export type NestedTypeExample = {
   };
   scalar1: Scalars;
 };
+
+export type ArrayExample = {
+  arrProp: SimpleExample[];
+};
 "
 `;
 
@@ -792,6 +834,38 @@ export class NestedTypeExampleBuilder {
 
 export function aNestedTypeExampleBuilder<O extends DeepPartial<SchemaTypes.NestedTypeExample> = {}>(baseObj?: O): NestedTypeExampleBuilder {
   return new NestedTypeExampleBuilder(baseObj ?? {});
+}
+"
+`;
+
+exports[`Builder Generator should generate builders with null initializer 6`] = `
+"/* eslint-disable */
+import { DeepPartial } from 'ts-essentials';
+import * as SchemaTypes from './simpleInterfacesAndTypes';
+import { cloneDeep } from 'lodash';
+
+export class ArrayExampleBuilder {
+  constructor(private readonly obj = {arrProp: null} as DeepPartial<SchemaTypes.ArrayExample>) {
+  }
+
+  public withArrProp<P extends DeepPartial<SchemaTypes.SimpleExample>[]>(val: P): ArrayExampleBuilder {
+    this.obj.arrProp = val;
+    return this;
+  }
+
+  public includeTypename() {
+    // @ts-ignore
+    this.obj.__typename = 'ArrayExample';
+    return this;
+  }
+
+  public get(): SchemaTypes.ArrayExample {
+    return cloneDeep(this.obj) as SchemaTypes.ArrayExample;
+  }
+}
+
+export function aArrayExampleBuilder<O extends DeepPartial<SchemaTypes.ArrayExample> = {}>(baseObj?: O): ArrayExampleBuilder {
+  return new ArrayExampleBuilder(baseObj ?? {});
 }
 "
 `;

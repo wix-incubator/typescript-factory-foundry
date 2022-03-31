@@ -105,8 +105,13 @@ describe('Builder Generator', () => {
       `${outputFolder}/NestedTypeExampleBuilder.ts`,
       'utf8',
     );
+    const ArrayTypeExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/ArrayExampleBuilder.ts`,
+      'utf8',
+    );
 
     expect(fs.readdirSync(outputFolder)).toEqual([
+      'ArrayExampleBuilder.ts',
       'NestedTypeExampleBuilder.ts',
       'ScalarsBuilder.ts',
       'SimpleExampleBuilder.ts',
@@ -118,6 +123,7 @@ describe('Builder Generator', () => {
     expect(SimpleExampleBuilderFile).toMatchSnapshot();
     expect(simpleInterfacesAndTypesFile).toMatchSnapshot();
     expect(NestedTypeExampleBuilderFile).toMatchSnapshot();
+    expect(ArrayTypeExampleBuilderFile).toMatchSnapshot();
   });
 
   it('should generate builders for empty type', async () => {
@@ -227,8 +233,13 @@ describe('Builder Generator', () => {
       `${outputFolder}/NestedTypeExampleBuilder.ts`,
       'utf8',
     );
+    const ArrayTypeExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/ArrayExampleBuilder.ts`,
+      'utf8',
+    );
 
     expect(fs.readdirSync(outputFolder)).toEqual([
+      'ArrayExampleBuilder.ts',
       'NestedTypeExampleBuilder.ts',
       'ScalarsBuilder.ts',
       'SimpleExampleBuilder.ts',
@@ -240,6 +251,7 @@ describe('Builder Generator', () => {
     expect(SimpleExampleBuilderFile).toMatchSnapshot();
     expect(simpleInterfacesAndTypesFile).toMatchSnapshot();
     expect(NestedTypeExampleBuilderFile).toMatchSnapshot();
+    expect(ArrayTypeExampleBuilderFile).toMatchSnapshot();
   });
 });
 
