@@ -54,18 +54,19 @@ export type Scalars = {
   Long: number;
 };
 
-export type SimpleExample = {
+export interface SimpleExample {
   prop1: Scalars['Boolean'];
   prop2: number;
   prop3: {
     innerProp: string;
   };
   prop4: NestTypeExample;
-};
+}
 
 export type NestTypeExample = {
   nestedProp: string;
-}
+  simpleExampleProp: SimpleExample;
+};
 ```
 
 Then by running the following command from `package.json` file:
@@ -90,8 +91,8 @@ Which will look like this:
 ```typescript
 //index.ts
 export * from './ScalarsBuilder';
-export * from './SimpleExampleBuilder';
 export * from './NestTypeExampleBuilder';
+export * from './SimpleExampleBuilder';
 
 // types.ts
 export type Scalars = {
@@ -105,23 +106,25 @@ export type Scalars = {
   Long: number;
 };
 
-export type SimpleExample = {
+export interface SimpleExample {
   prop1: Scalars['Boolean'];
   prop2: number;
   prop3: {
     innerProp: string;
   };
   prop4: NestTypeExample;
-};
+}
 
 export type NestTypeExample = {
   nestedProp: string;
-}
+  simpleExampleProp: SimpleExample;
+};
 
 // ScalarsBuilder.ts
 /* eslint-disable */
 import { DeepPartial } from 'ts-essentials';
-import * as SchemaTypes from './simpleTypes';
+import * as SchemaTypes from './types';
+import { cloneDeep } from 'lodash';
 
 export class ScalarsBuilder {
   constructor(private readonly obj = {} as DeepPartial<SchemaTypes.Scalars>) {
@@ -174,7 +177,7 @@ export class ScalarsBuilder {
   }
 
   public get(): SchemaTypes.Scalars {
-    return Object.assign({}, this.obj) as SchemaTypes.Scalars;
+    return cloneDeep(this.obj) as SchemaTypes.Scalars;
   }
 }
 
@@ -185,7 +188,8 @@ export function aScalarsBuilder<O extends DeepPartial<SchemaTypes.Scalars> = {}>
 // SimpleExampleBuilder.ts
 /* eslint-disable */
 import { DeepPartial } from 'ts-essentials';
-import * as SchemaTypes from './simpleTypes';
+import * as SchemaTypes from './types';
+import { cloneDeep } from 'lodash';
 
 export class SimpleExampleBuilder {
   constructor(private readonly obj = {} as DeepPartial<SchemaTypes.SimpleExample>) {
@@ -218,7 +222,7 @@ export class SimpleExampleBuilder {
   }
 
   public get(): SchemaTypes.SimpleExample {
-    return Object.assign({}, this.obj) as SchemaTypes.SimpleExample;
+    return cloneDeep(this.obj) as SchemaTypes.SimpleExample;
   }
 }
 
@@ -229,7 +233,9 @@ export function aSimpleExampleBuilder<O extends DeepPartial<SchemaTypes.SimpleEx
 // NestTypeExampleBuilder.ts
 /* eslint-disable */
 import { DeepPartial } from 'ts-essentials';
-import * as SchemaTypes from './simpleTypes';
+import * as SchemaTypes from './types';
+import { cloneDeep } from 'lodash';
+import {aSimpleExampleBuilder} from './SimpleExampleBuilder';
 
 export class NestTypeExampleBuilder {
   constructor(private readonly obj = {} as DeepPartial<SchemaTypes.NestTypeExample>) {
@@ -240,6 +246,11 @@ export class NestTypeExampleBuilder {
     return this;
   }
 
+  public withSimpleExampleProp<P extends DeepPartial<SchemaTypes.SimpleExample>>(val: P | ((builder: ReturnType<typeof aSimpleExampleBuilder>) => ReturnType<typeof aSimpleExampleBuilder>)): NestTypeExampleBuilder {
+    this.obj.simpleExampleProp = typeof val === 'function' ? val(aSimpleExampleBuilder()).get() : val;
+    return this;
+  }
+
   public includeTypename() {
     // @ts-ignore
     this.obj.__typename = 'NestTypeExample';
@@ -247,7 +258,7 @@ export class NestTypeExampleBuilder {
   }
 
   public get(): SchemaTypes.NestTypeExample {
-    return Object.assign({}, this.obj) as SchemaTypes.NestTypeExample;
+    return cloneDeep(this.obj) as SchemaTypes.NestTypeExample;
   }
 }
 
@@ -266,7 +277,13 @@ Then add the properties you want:
 ```typescript
 builder.withProp1(true);
 builder.withProp2(15).withProp3({innerProp: 'inner prop'});
-builder.withProp4(aNestedTypeExampleBuilder().withNestedProp('nested prop').get());
+builder.withProp4(
+  aNestTypeExampleBuilder()
+    .withNestedProp('nested prop')
+    // passing builder function is currently limited to "interfaces" properties
+    .withSimpleExampleProp((builder) => builder.withProp1(false))
+    .get()
+);
 ```
 
 When all the properties you want to have on the object are present, call the `get()` method to receive a concrete object:
@@ -284,14 +301,14 @@ const builder = aSimpleExampleBuilder();
 
 builder.withProp1(true);
 builder.withProp2(15).withProp3({innerProp: 'inner prop'});
-builder.withProp4(aNestedTypeExampleBuilder().withNestedProp('nested prop').get());
+builder.withProp4(aNestTypeExampleBuilder().withNestedProp('nested prop').get());
 
 // item with all the initially defined props
 const item1 = builder.get();
-builder.withProp4(aNestedTypeExampleBuilder().withNestedProp('nested prop').get());
+builder.withProp4(aNestTypeExampleBuilder().withNestedProp('nested prop').get());
 
 // update builder
-builder.withProp4(aNestedTypeExampleBuilder().withNestedProp('a whole new value').get());
+builder.withProp4(aNestTypeExampleBuilder().withNestedProp('a whole new value').get());
 
 // item with all the initially defined props and the overridden prop4
 const item2 = builder.get();

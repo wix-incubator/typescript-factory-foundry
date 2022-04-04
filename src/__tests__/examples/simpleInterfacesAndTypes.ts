@@ -24,3 +24,7 @@ export type NestedTypeExample = {
   };
   scalar1: Scalars;
 };
+
+export type ArrayExample = {
+  arrProp: SimpleExample[];
+};

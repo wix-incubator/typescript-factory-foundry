@@ -105,8 +105,13 @@ describe('Builder Generator', () => {
       `${outputFolder}/NestedTypeExampleBuilder.ts`,
       'utf8',
     );
+    const ArrayTypeExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/ArrayExampleBuilder.ts`,
+      'utf8',
+    );
 
     expect(fs.readdirSync(outputFolder)).toEqual([
+      'ArrayExampleBuilder.ts',
       'NestedTypeExampleBuilder.ts',
       'ScalarsBuilder.ts',
       'SimpleExampleBuilder.ts',
@@ -118,6 +123,7 @@ describe('Builder Generator', () => {
     expect(SimpleExampleBuilderFile).toMatchSnapshot();
     expect(simpleInterfacesAndTypesFile).toMatchSnapshot();
     expect(NestedTypeExampleBuilderFile).toMatchSnapshot();
+    expect(ArrayTypeExampleBuilderFile).toMatchSnapshot();
   });
 
   it('should generate builders for empty type', async () => {
@@ -227,8 +233,13 @@ describe('Builder Generator', () => {
       `${outputFolder}/NestedTypeExampleBuilder.ts`,
       'utf8',
     );
+    const ArrayTypeExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/ArrayExampleBuilder.ts`,
+      'utf8',
+    );
 
     expect(fs.readdirSync(outputFolder)).toEqual([
+      'ArrayExampleBuilder.ts',
       'NestedTypeExampleBuilder.ts',
       'ScalarsBuilder.ts',
       'SimpleExampleBuilder.ts',
@@ -240,6 +251,61 @@ describe('Builder Generator', () => {
     expect(SimpleExampleBuilderFile).toMatchSnapshot();
     expect(simpleInterfacesAndTypesFile).toMatchSnapshot();
     expect(NestedTypeExampleBuilderFile).toMatchSnapshot();
+    expect(ArrayTypeExampleBuilderFile).toMatchSnapshot();
+  });
+
+  it('should generate builders for recurring types', async () => {
+    const simpleBuildersExample = path.join(
+      __dirname,
+      './examples/recurringTypes.ts',
+    );
+    const outputFolder = path.join(__dirname, 'output/recurring-types');
+    cleanOutput(outputFolder);
+
+    await generateBuilders(simpleBuildersExample, outputFolder);
+
+    const indexFile = fs.readFileSync(`${outputFolder}/index.ts`, 'utf8');
+    const ScalarsBuilderFile = fs.readFileSync(
+      `${outputFolder}/ScalarsBuilder.ts`,
+      'utf8',
+    );
+    const SimpleExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/SimpleExampleBuilder.ts`,
+      'utf8',
+    );
+    const simpleInterfacesAndTypesFile = fs.readFileSync(
+      `${outputFolder}/recurringTypes.ts`,
+      'utf8',
+    );
+    const UnionTypeExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/UnionTypeExampleBuilder.ts`,
+      'utf8',
+    );
+    const RecurringTypesExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/RecurringTypesExampleBuilder.ts`,
+      'utf8',
+    );
+    const ArrayExampleBuilderFile = fs.readFileSync(
+      `${outputFolder}/ArrayExampleBuilder.ts`,
+      'utf8',
+    );
+
+    expect(fs.readdirSync(outputFolder)).toEqual([
+      'ArrayExampleBuilder.ts',
+      'RecurringTypesExampleBuilder.ts',
+      'ScalarsBuilder.ts',
+      'SimpleExampleBuilder.ts',
+      'UnionTypeExampleBuilder.ts',
+      'index.ts',
+      'recurringTypes.ts',
+    ]);
+    expect(indexFile).toMatchSnapshot();
+    expect(ScalarsBuilderFile).toMatchSnapshot();
+    expect(SimpleExampleBuilderFile).toMatchSnapshot();
+    expect(simpleInterfacesAndTypesFile).toMatchSnapshot();
+    expect(UnionTypeExampleBuilderFile).toMatchSnapshot();
+    expect(RecurringTypesExampleBuilderFile).toMatchSnapshot();
+    expect(ArrayExampleBuilderFile).toMatchSnapshot();
   });
 });
 

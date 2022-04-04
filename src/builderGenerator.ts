@@ -15,6 +15,10 @@ import {
 import * as path from 'path';
 import { copyFile } from 'fs/promises';
 
+const builderExtensionName = 'Builder';
+const builderFunctionNamePrefix = 'a';
+const valueParameterTypeName = 'P';
+
 export interface BuilderOptions {
   useNullInitializer?: boolean;
 }
@@ -49,6 +53,7 @@ export async function generateBuilders(
   const classesAndFactories: {
     classObj: ClassDeclarationStructure;
     builderFunc: FunctionDeclarationStructure;
+    importedBuilders: Set<string>;
   }[] = [];
 
   const indexFile = project.createSourceFile(
@@ -60,69 +65,64 @@ export async function generateBuilders(
     },
   );
 
-  for (const typeAlias of allTypes) {
-    const { classObj, builderFunc } = generateBuilderFunc(typeAlias, options);
-    if (classObj && builderFunc) {
-      classesAndFactories.push({
-        classObj,
-        builderFunc,
-      });
-    }
-  }
-  for (const interfaceType of allInterfaces) {
-    const { classObj, builderFunc } = generateBuilderFunc(
-      interfaceType,
+  const typesToGenerate = [...allTypes, ...allInterfaces];
+  for (const typeToGenerate of typesToGenerate) {
+    const { classObj, builderFunc, importedBuilders } = generateBuilderFunc(
+      typeToGenerate,
       options,
     );
     if (classObj && builderFunc) {
       classesAndFactories.push({
         classObj,
         builderFunc,
+        importedBuilders,
       });
     }
   }
 
-  const promises = classesAndFactories.map(({ classObj, builderFunc }) => {
-    const outFile = project.createSourceFile(
-      path.join(outputFilePath, `${classObj.name}.ts`),
-      undefined,
-      {
-        overwrite: true,
-        scriptKind: ts.ScriptKind.TS,
-      },
-    );
+  const promises = classesAndFactories.map(
+    async ({ classObj, builderFunc, importedBuilders }) => {
+      const outFile = project.createSourceFile(
+        path.join(outputFilePath, `${classObj.name}.ts`),
+        undefined,
+        {
+          overwrite: true,
+          scriptKind: ts.ScriptKind.TS,
+        },
+      );
 
-    outFile.addStatements([
-      '/* eslint-disable */',
-      {
-        kind: StructureKind.ImportDeclaration,
-        namedImports: ['DeepPartial'],
-        moduleSpecifier: 'ts-essentials',
-      },
-      {
-        kind: StructureKind.ImportDeclaration,
-        namespaceImport: 'SchemaTypes',
-        moduleSpecifier: `./${fileNameWithoutExtension}`,
-      },
-      {
-        kind: StructureKind.ImportDeclaration,
-        namedImports: ['cloneDeep'],
-        moduleSpecifier: 'lodash',
-      },
-    ]);
+      outFile.addStatements([
+        '/* eslint-disable */',
+        {
+          kind: StructureKind.ImportDeclaration,
+          namedImports: ['DeepPartial'],
+          moduleSpecifier: 'ts-essentials',
+        },
+        {
+          kind: StructureKind.ImportDeclaration,
+          namespaceImport: 'SchemaTypes',
+          moduleSpecifier: `./${fileNameWithoutExtension}`,
+        },
+        {
+          kind: StructureKind.ImportDeclaration,
+          namedImports: ['cloneDeep'],
+          moduleSpecifier: 'lodash',
+        },
+        ...Array.from(importedBuilders),
+      ]);
 
-    indexFile.addExportDeclaration({
-      kind: StructureKind.ExportDeclaration,
-      moduleSpecifier: `./${classObj.name}`,
-    });
+      indexFile.addExportDeclaration({
+        kind: StructureKind.ExportDeclaration,
+        moduleSpecifier: `./${classObj.name}`,
+      });
 
-    outFile.addClass(classObj);
-    outFile.addFunction(builderFunc);
+      outFile.addClass(classObj);
+      outFile.addFunction(builderFunc);
 
-    return outFile
-      .save()
-      .then(() => copyFile(inputFilePath, `${outputFilePath}/${fileName}`));
-  });
+      await outFile.save();
+      return copyFile(inputFilePath, `${outputFilePath}/${fileName}`);
+    },
+  );
 
   return Promise.all([...promises, indexFile.save()]).then();
 }
@@ -131,6 +131,7 @@ function generateBuilderFunc(
   typeAlias: TypeAliasDeclaration | InterfaceDeclaration,
   { useNullInitializer }: BuilderOptions,
 ) {
+  const importedBuilders = new Set<string>();
   const rootType = typeAlias.getType();
 
   const props = rootType.getProperties();
@@ -147,7 +148,7 @@ function generateBuilderFunc(
 
   const objName = 'obj';
   const typeName = typeAlias.getName();
-  const className = `${typeName}Builder`;
+  const className = `${typeName}${builderExtensionName}`;
 
   const methods: MethodDeclarationStructure[] = [];
   for (const prop of props) {
@@ -156,8 +157,8 @@ function generateBuilderFunc(
       continue;
     }
     const type = prop.getTypeAtLocation(prop.getValueDeclarationOrThrow());
-
-    const unionTypes = type.isUnion() ? type.getUnionTypes() : [type];
+    const isUnion = type.isUnion();
+    const unionTypes = isUnion ? type.getUnionTypes() : [type];
 
     const parametersType = unionTypes
       .map(builderParameterTypeMapper)
@@ -165,14 +166,22 @@ function generateBuilderFunc(
       .map((t) => (t === 'true' ? 'boolean' : t))
       .join(' | ');
 
+    const builderMethodParameterDefinition = addBuilderMethodToImports({
+      type,
+      isUnion,
+      propName,
+      importedBuilders,
+    });
     const method: MethodDeclarationStructure = {
       kind: StructureKind.Method,
       name: `with${capitalizeFirstLetter(propName)}`,
       returnType: className,
-      typeParameters: [`P extends ${parametersType}`],
-      parameters: [{ name: 'val', type: 'P' }],
+      typeParameters: [`${valueParameterTypeName} extends ${parametersType}`],
+      parameters: [
+        { name: 'val', type: builderMethodParameterDefinition.name },
+      ],
       scope: Scope.Public,
-      statements: [`this.obj.${propName} = val;`, 'return this;'],
+      statements: [builderMethodParameterDefinition.statement, 'return this;'],
     };
     methods.push(method);
   }
@@ -198,7 +207,7 @@ function generateBuilderFunc(
 
   const builderFunc: FunctionDeclarationStructure = {
     kind: StructureKind.Function,
-    name: `a${className}`,
+    name: `${builderFunctionNamePrefix}${className}`,
     isExported: true,
     typeParameters: [`O extends DeepPartial<SchemaTypes.${typeName}> = {}`],
     returnType: `${className}`,
@@ -238,24 +247,57 @@ function generateBuilderFunc(
     isExported: true,
   };
 
-  return { builderFunc, classObj };
+  return { builderFunc, classObj, importedBuilders };
+}
+
+function addBuilderMethodToImports({
+  type,
+  isUnion,
+  propName,
+  importedBuilders,
+}: {
+  type: Type<ts.Type>;
+  isUnion: boolean;
+  propName: string;
+  importedBuilders: Set<string>;
+}): { name: string; statement: string } {
+  if (
+    !isUnion &&
+    type.isClassOrInterface() &&
+    type.getProperties().length > 0
+  ) {
+    const { builderMethodName, builderMethodFileName } =
+      getBuilderMethodDefinition(type);
+    importedBuilders.add(
+      `import {${builderMethodName}} from './${builderMethodFileName}';`,
+    );
+    const builderType = `ReturnType<typeof ${builderMethodName}>`;
+    const valueFunctionParameterType = `((builder: ${builderType}) => ${builderType})`;
+    return {
+      name: `${valueParameterTypeName} | ${valueFunctionParameterType}`,
+      statement: `this.obj.${propName} = typeof val === 'function' ? val(${builderMethodName}()).get() : val;`,
+    };
+  }
+  return {
+    name: valueParameterTypeName,
+    statement: `this.obj.${propName} = val;`,
+  };
+}
+
+function getBuilderMethodDefinition(type: Type<ts.Type>): {
+  builderMethodName: string;
+  builderMethodFileName: string;
+} {
+  const typeForBuilderFunction = extractTypeName(type);
+  const builderMethodFileName = `${typeForBuilderFunction}${builderExtensionName}`;
+  const builderMethodName = `${builderFunctionNamePrefix}${builderMethodFileName}`;
+  return { builderMethodName, builderMethodFileName };
 }
 
 function builderParameterTypeMapper(subType: Type): string {
   const isArray = subType.isArray();
-
   const resultType = isArray ? subType.getArrayElementType()! : subType;
-
-  const isPrimitive = [
-    resultType.isString(),
-    resultType.isNumber(),
-    resultType.isLiteral(),
-    resultType.isBoolean(),
-    resultType.isUndefined(),
-    resultType.isNull(),
-    resultType.isAny(),
-    resultType.isEnum(),
-  ].some(Boolean);
+  const isPrimitive = isPrimitiveType(resultType);
 
   let resultTypeStr = resultType
     .getText()
@@ -266,6 +308,23 @@ function builderParameterTypeMapper(subType: Type): string {
     : `DeepPartial<${resultTypeStr}>`;
 
   return isArray ? `${resultTypeStr}[]` : resultTypeStr;
+}
+
+function isPrimitiveType(resultType: Type<ts.Type>) {
+  return [
+    resultType.isString(),
+    resultType.isNumber(),
+    resultType.isLiteral(),
+    resultType.isBoolean(),
+    resultType.isUndefined(),
+    resultType.isNull(),
+    resultType.isAny(),
+    resultType.isEnum(),
+  ].some(Boolean);
+}
+
+function extractTypeName(type: Type): string {
+  return type.getText().replace(/import\("[^"]*"\)\./gi, '');
 }
 
 function capitalizeFirstLetter(string: string) {
