@@ -1,4 +1,4 @@
-name: Node.js Package
+name: Test PR
 
 on: [pull_request]
 
