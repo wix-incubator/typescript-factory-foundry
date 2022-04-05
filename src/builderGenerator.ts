@@ -133,7 +133,6 @@ function generateBuilderFunc(
 ) {
   const importedBuilders = new Set<string>();
   const rootType = typeAlias.getType();
-
   const props = rootType.getProperties();
 
   if (props.length <= 0) {
