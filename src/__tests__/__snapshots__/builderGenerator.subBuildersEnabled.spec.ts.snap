@@ -1,0 +1,198 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Builder Generator { enableSubBuilders: true } should generate builders for interfaces and types 1`] = `
+"/* eslint-disable */
+import { DeepPartial } from 'ts-essentials';
+import * as SchemaTypes from './simpleInterfacesAndTypes';
+import { SimpleExampleBuilder } from './SimpleExampleBuilder';
+import { ScalarsBuilder } from './ScalarsBuilder';
+
+export class NestedTypeExampleBuilder {
+  constructor(private readonly obj = {} as DeepPartial<SchemaTypes.NestedTypeExample>) {
+  }
+
+  public withNestedProp1<P extends DeepPartial<SchemaTypes.SimpleExample>>(val: P | ((b: SimpleExampleBuilder) => SimpleExampleBuilder)): NestedTypeExampleBuilder {
+    if (typeof val === 'function') {
+      this.obj.nestedProp1 = val(new SimpleExampleBuilder(this.obj.nestedProp1)).get();
+      return this;
+    }
+
+    this.obj.nestedProp1 = val;
+    return this;
+  }
+
+  public withNestedProp2<P extends DeepPartial<{ simple: SchemaTypes.SimpleExample; }>>(val: P): NestedTypeExampleBuilder {
+    this.obj.nestedProp2 = val;
+    return this;
+  }
+
+  public withScalar1<P extends DeepPartial<SchemaTypes.Scalars>>(val: P | ((b: ScalarsBuilder) => ScalarsBuilder)): NestedTypeExampleBuilder {
+    if (typeof val === 'function') {
+      this.obj.scalar1 = val(new ScalarsBuilder(this.obj.scalar1)).get();
+      return this;
+    }
+
+    this.obj.scalar1 = val;
+    return this;
+  }
+
+  public includeTypename() {
+    // @ts-ignore
+    this.obj.__typename = 'NestedTypeExample';
+    return this;
+  }
+
+  public get(): SchemaTypes.NestedTypeExample {
+    return Object.assign({}, this.obj) as SchemaTypes.NestedTypeExample;
+  }
+}
+
+export function aNestedTypeExampleBuilder<O extends DeepPartial<SchemaTypes.NestedTypeExample> = {}>(baseObj?: O): NestedTypeExampleBuilder {
+  return new NestedTypeExampleBuilder(baseObj ?? {});
+}
+"
+`;
+
+exports[`Builder Generator { enableSubBuilders: true } should generate builders for interfaces and types 2`] = `
+"/* eslint-disable */
+import { DeepPartial } from 'ts-essentials';
+import * as SchemaTypes from './simpleInterfacesAndTypes';
+
+export class ScalarsBuilder {
+  constructor(private readonly obj = {} as DeepPartial<SchemaTypes.Scalars>) {
+  }
+
+  public withID<P extends string>(val: P): ScalarsBuilder {
+    this.obj.ID = val;
+    return this;
+  }
+
+  public withString<P extends string>(val: P): ScalarsBuilder {
+    this.obj.String = val;
+    return this;
+  }
+
+  public withBoolean<P extends boolean>(val: P): ScalarsBuilder {
+    this.obj.Boolean = val;
+    return this;
+  }
+
+  public withInt<P extends number>(val: P): ScalarsBuilder {
+    this.obj.Int = val;
+    return this;
+  }
+
+  public withFloat<P extends number>(val: P): ScalarsBuilder {
+    this.obj.Float = val;
+    return this;
+  }
+
+  public withBigDecimal<P extends number>(val: P): ScalarsBuilder {
+    this.obj.BigDecimal = val;
+    return this;
+  }
+
+  public withJson<P extends any>(val: P): ScalarsBuilder {
+    this.obj.Json = val;
+    return this;
+  }
+
+  public withLong<P extends number>(val: P): ScalarsBuilder {
+    this.obj.Long = val;
+    return this;
+  }
+
+  public includeTypename() {
+    // @ts-ignore
+    this.obj.__typename = 'Scalars';
+    return this;
+  }
+
+  public get(): SchemaTypes.Scalars {
+    return Object.assign({}, this.obj) as SchemaTypes.Scalars;
+  }
+}
+
+export function aScalarsBuilder<O extends DeepPartial<SchemaTypes.Scalars> = {}>(baseObj?: O): ScalarsBuilder {
+  return new ScalarsBuilder(baseObj ?? {});
+}
+"
+`;
+
+exports[`Builder Generator { enableSubBuilders: true } should generate builders for interfaces and types 3`] = `
+"/* eslint-disable */
+import { DeepPartial } from 'ts-essentials';
+import * as SchemaTypes from './simpleInterfacesAndTypes';
+
+export class SimpleExampleBuilder {
+  constructor(private readonly obj = {} as DeepPartial<SchemaTypes.SimpleExample>) {
+  }
+
+  public withProp1<P extends boolean>(val: P): SimpleExampleBuilder {
+    this.obj.prop1 = val;
+    return this;
+  }
+
+  public withProp2<P extends number>(val: P): SimpleExampleBuilder {
+    this.obj.prop2 = val;
+    return this;
+  }
+
+  public withProp3<P extends DeepPartial<{ innerProp: string; }>>(val: P): SimpleExampleBuilder {
+    this.obj.prop3 = val;
+    return this;
+  }
+
+  public includeTypename() {
+    // @ts-ignore
+    this.obj.__typename = 'SimpleExample';
+    return this;
+  }
+
+  public get(): SchemaTypes.SimpleExample {
+    return Object.assign({}, this.obj) as SchemaTypes.SimpleExample;
+  }
+}
+
+export function aSimpleExampleBuilder<O extends DeepPartial<SchemaTypes.SimpleExample> = {}>(baseObj?: O): SimpleExampleBuilder {
+  return new SimpleExampleBuilder(baseObj ?? {});
+}
+"
+`;
+
+exports[`Builder Generator { enableSubBuilders: true } should generate builders for interfaces and types 4`] = `
+"export type Scalars = {
+  ID: string;
+  String: string;
+  Boolean: boolean;
+  Int: number;
+  Float: number;
+  BigDecimal: number;
+  Json: any;
+  Long: number;
+};
+
+export interface SimpleExample {
+  prop1: Scalars['Boolean'];
+  prop2: number;
+  prop3: {
+    innerProp: string;
+  };
+}
+
+export type NestedTypeExample = {
+  nestedProp1: SimpleExample;
+  nestedProp2: {
+    simple: SimpleExample;
+  };
+  scalar1: Scalars;
+};
+"
+`;
+
+exports[`Builder Generator { enableSubBuilders: true } should generate builders for interfaces and types 5`] = `
+"export * from './ScalarsBuilder';
+export * from './NestedTypeExampleBuilder';
+export * from './SimpleExampleBuilder';
+"
+`;

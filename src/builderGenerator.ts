@@ -1,6 +1,7 @@
 import {
   ClassDeclarationStructure,
   FunctionDeclarationStructure,
+  ImportDeclarationStructure,
   IndentationText,
   InterfaceDeclaration,
   MethodDeclarationStructure,
@@ -18,6 +19,7 @@ import { copyFile } from 'fs/promises';
 export async function generateBuilders(
   inputFilePath: string,
   outputFilePath: string,
+  { enableSubBuilders = false } = {},
 ): Promise<void> {
   const project = new Project({
     manipulationSettings: {
@@ -44,6 +46,7 @@ export async function generateBuilders(
   const classesAndFactories: {
     classObj: ClassDeclarationStructure;
     builderFunc: FunctionDeclarationStructure;
+    additionalImports: ImportDeclarationStructure[];
   }[] = [];
 
   const indexFile = project.createSourceFile(
@@ -55,69 +58,71 @@ export async function generateBuilders(
     },
   );
 
-  for (const typeAlias of allTypes) {
-    const { classObj, builderFunc } = generateBuilderFunc(typeAlias);
-    if (classObj && builderFunc) {
-      classesAndFactories.push({
-        classObj,
-        builderFunc,
-      });
-    }
-  }
-  for (const interfaceType of allInterfaces) {
-    const { classObj, builderFunc } = generateBuilderFunc(interfaceType);
-    if (classObj && builderFunc) {
-      classesAndFactories.push({
-        classObj,
-        builderFunc,
-      });
-    }
-  }
-
-  const promises = classesAndFactories.map(({ classObj, builderFunc }) => {
-    const outFile = project.createSourceFile(
-      path.join(outputFilePath, `${classObj.name}.ts`),
-      undefined,
+  for (const typeEntry of [...allTypes, ...allInterfaces]) {
+    const { classObj, builderFunc, additionalImports } = generateBuilderFunc(
+      typeEntry,
       {
-        overwrite: true,
-        scriptKind: ts.ScriptKind.TS,
+        enableSubBuilders,
       },
     );
+    if (classObj && builderFunc) {
+      classesAndFactories.push({
+        classObj,
+        builderFunc,
+        additionalImports,
+      });
+    }
+  }
 
-    outFile.addStatements([
-      '/* eslint-disable */',
-      {
-        kind: StructureKind.ImportDeclaration,
-        namedImports: ['DeepPartial'],
-        moduleSpecifier: 'ts-essentials',
-      },
-      {
-        kind: StructureKind.ImportDeclaration,
-        namespaceImport: 'SchemaTypes',
-        moduleSpecifier: `./${fileNameWithoutExtension}`,
-      },
-    ]);
+  const promises = classesAndFactories.map(
+    ({ classObj, builderFunc, additionalImports }) => {
+      const outFile = project.createSourceFile(
+        path.join(outputFilePath, `${classObj.name}.ts`),
+        undefined,
+        {
+          overwrite: true,
+          scriptKind: ts.ScriptKind.TS,
+        },
+      );
 
-    indexFile.addExportDeclaration({
-      kind: StructureKind.ExportDeclaration,
-      moduleSpecifier: `./${classObj.name}`,
-    });
+      outFile.addStatements([
+        '/* eslint-disable */',
+        {
+          kind: StructureKind.ImportDeclaration,
+          namedImports: ['DeepPartial'],
+          moduleSpecifier: 'ts-essentials',
+        },
+        {
+          kind: StructureKind.ImportDeclaration,
+          namespaceImport: 'SchemaTypes',
+          moduleSpecifier: `./${fileNameWithoutExtension}`,
+        },
+        ...additionalImports,
+      ]);
 
-    outFile.addClass(classObj);
-    outFile.addFunction(builderFunc);
+      indexFile.addExportDeclaration({
+        kind: StructureKind.ExportDeclaration,
+        moduleSpecifier: `./${classObj.name}`,
+      });
 
-    return outFile
-      .save()
-      .then(() => copyFile(inputFilePath, `${outputFilePath}/${fileName}`));
-  });
+      outFile.addClass(classObj);
+      outFile.addFunction(builderFunc);
+
+      return outFile
+        .save()
+        .then(() => copyFile(inputFilePath, `${outputFilePath}/${fileName}`));
+    },
+  );
 
   return Promise.all([...promises, indexFile.save()]).then();
 }
 
 function generateBuilderFunc(
   typeAlias: TypeAliasDeclaration | InterfaceDeclaration,
+  { enableSubBuilders }: { enableSubBuilders: boolean },
 ) {
   const rootType = typeAlias.getType();
+  const additionalImports: ImportDeclarationStructure[] = [];
 
   const props = rootType.getProperties();
 
@@ -151,14 +156,47 @@ function generateBuilderFunc(
       .map((t) => (t === 'true' ? 'boolean' : t))
       .join(' | ');
 
+    const subBuilderName =
+      !isPrimitive(type) && !type.isArray() && !type.getText().startsWith('{')
+        ? `${type.getText().replace(/import\("[^"]*"\)\./gi, '')}Builder`
+        : null;
+
+    if (enableSubBuilders && subBuilderName) {
+      additionalImports.push({
+        kind: StructureKind.ImportDeclaration,
+        namedImports: [subBuilderName],
+        moduleSpecifier: `./${subBuilderName}`,
+      });
+    }
+
     const method: MethodDeclarationStructure = {
       kind: StructureKind.Method,
       name: `with${capitalizeFirstLetter(propName)}`,
       returnType: className,
       typeParameters: [`P extends ${parametersType}`],
-      parameters: [{ name: 'val', type: 'P' }],
+      parameters: [
+        {
+          name: 'val',
+          type: `P${
+            enableSubBuilders && subBuilderName
+              ? ` | ((b: ${subBuilderName}) => ${subBuilderName})`
+              : ''
+          }`,
+        },
+      ],
       scope: Scope.Public,
-      statements: [`this.obj.${propName} = val;`, 'return this;'],
+      statements: [
+        ...(enableSubBuilders && subBuilderName
+          ? [
+              `if (typeof val === 'function') {`,
+              `  this.obj.${propName} = val(new ${subBuilderName}(this.obj.${propName})).get();`,
+              '  return this;',
+              '}',
+            ]
+          : []),
+        `this.obj.${propName} = val;`,
+        'return this;',
+      ],
     };
     methods.push(method);
   }
@@ -218,7 +256,7 @@ function generateBuilderFunc(
     isExported: true,
   };
 
-  return { builderFunc, classObj };
+  return { builderFunc, classObj, additionalImports };
 }
 
 function builderParameterTypeMapper(subType: Type): string {
@@ -226,26 +264,28 @@ function builderParameterTypeMapper(subType: Type): string {
 
   const resultType = isArray ? subType.getArrayElementType()! : subType;
 
-  const isPrimitive = [
-    resultType.isString(),
-    resultType.isNumber(),
-    resultType.isLiteral(),
-    resultType.isBoolean(),
-    resultType.isUndefined(),
-    resultType.isNull(),
-    resultType.isAny(),
-    resultType.isEnum(),
-  ].some(Boolean);
-
   let resultTypeStr = resultType
     .getText()
     .replace(/import\("[^"]*"\)/gi, 'SchemaTypes');
 
-  resultTypeStr = isPrimitive
+  resultTypeStr = isPrimitive(resultType)
     ? `${resultTypeStr}`
     : `DeepPartial<${resultTypeStr}>`;
 
   return isArray ? `${resultTypeStr}[]` : resultTypeStr;
+}
+
+function isPrimitive(type: Type) {
+  return [
+    type.isString(),
+    type.isNumber(),
+    type.isLiteral(),
+    type.isBoolean(),
+    type.isUndefined(),
+    type.isNull(),
+    type.isAny(),
+    type.isEnum(),
+  ].some(Boolean);
 }
 
 function capitalizeFirstLetter(string: string) {
