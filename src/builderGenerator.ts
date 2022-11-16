@@ -262,7 +262,9 @@ function addBuilderMethodToImports({
 }): { name: string; statement: string } {
   if (
     !isUnion &&
-    type.isClassOrInterface() &&
+    !type.isArray() &&
+    !isPrimitiveType(type) &&
+    !type.getText().startsWith('{') &&
     type.getProperties().length > 0
   ) {
     const { builderMethodName, builderMethodFileName } =
@@ -274,7 +276,7 @@ function addBuilderMethodToImports({
     const valueFunctionParameterType = `((builder: ${builderType}) => ${builderType})`;
     return {
       name: `${valueParameterTypeName} | ${valueFunctionParameterType}`,
-      statement: `this.obj.${propName} = typeof val === 'function' ? val(${builderMethodName}()).get() : val;`,
+      statement: `this.obj.${propName} = typeof val === 'function' ? val(${builderMethodName}(this.obj.${propName})).get() : val;`,
     };
   }
   return {

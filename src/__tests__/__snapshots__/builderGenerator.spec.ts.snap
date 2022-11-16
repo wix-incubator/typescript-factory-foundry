@@ -346,13 +346,14 @@ import { DeepPartial } from 'ts-essentials';
 import * as SchemaTypes from './simpleInterfacesAndTypes';
 import { cloneDeep } from 'lodash';
 import {aSimpleExampleBuilder} from './SimpleExampleBuilder';
+import {aScalarsBuilder} from './ScalarsBuilder';
 
 export class NestedTypeExampleBuilder {
   constructor(private readonly obj = {} as DeepPartial<SchemaTypes.NestedTypeExample>) {
   }
 
   public withNestedProp1<P extends DeepPartial<SchemaTypes.SimpleExample>>(val: P | ((builder: ReturnType<typeof aSimpleExampleBuilder>) => ReturnType<typeof aSimpleExampleBuilder>)): NestedTypeExampleBuilder {
-    this.obj.nestedProp1 = typeof val === 'function' ? val(aSimpleExampleBuilder()).get() : val;
+    this.obj.nestedProp1 = typeof val === 'function' ? val(aSimpleExampleBuilder(this.obj.nestedProp1)).get() : val;
     return this;
   }
 
@@ -361,8 +362,8 @@ export class NestedTypeExampleBuilder {
     return this;
   }
 
-  public withScalar1<P extends DeepPartial<SchemaTypes.Scalars>>(val: P): NestedTypeExampleBuilder {
-    this.obj.scalar1 = val;
+  public withScalar1<P extends DeepPartial<SchemaTypes.Scalars>>(val: P | ((builder: ReturnType<typeof aScalarsBuilder>) => ReturnType<typeof aScalarsBuilder>)): NestedTypeExampleBuilder {
+    this.obj.scalar1 = typeof val === 'function' ? val(aScalarsBuilder(this.obj.scalar1)).get() : val;
     return this;
   }
 
@@ -627,17 +628,17 @@ export class RecurringTypesExampleBuilder {
   }
 
   public withProp1<P extends DeepPartial<SchemaTypes.SimpleExample>>(val: P | ((builder: ReturnType<typeof aSimpleExampleBuilder>) => ReturnType<typeof aSimpleExampleBuilder>)): RecurringTypesExampleBuilder {
-    this.obj.prop1 = typeof val === 'function' ? val(aSimpleExampleBuilder()).get() : val;
+    this.obj.prop1 = typeof val === 'function' ? val(aSimpleExampleBuilder(this.obj.prop1)).get() : val;
     return this;
   }
 
   public withProp2<P extends DeepPartial<SchemaTypes.SimpleExample>>(val: P | ((builder: ReturnType<typeof aSimpleExampleBuilder>) => ReturnType<typeof aSimpleExampleBuilder>)): RecurringTypesExampleBuilder {
-    this.obj.prop2 = typeof val === 'function' ? val(aSimpleExampleBuilder()).get() : val;
+    this.obj.prop2 = typeof val === 'function' ? val(aSimpleExampleBuilder(this.obj.prop2)).get() : val;
     return this;
   }
 
   public withProp3<P extends DeepPartial<SchemaTypes.UnionTypeExample>>(val: P | ((builder: ReturnType<typeof aUnionTypeExampleBuilder>) => ReturnType<typeof aUnionTypeExampleBuilder>)): RecurringTypesExampleBuilder {
-    this.obj.prop3 = typeof val === 'function' ? val(aUnionTypeExampleBuilder()).get() : val;
+    this.obj.prop3 = typeof val === 'function' ? val(aUnionTypeExampleBuilder(this.obj.prop3)).get() : val;
     return this;
   }
 
@@ -1083,13 +1084,14 @@ import { DeepPartial } from 'ts-essentials';
 import * as SchemaTypes from './simpleInterfacesAndTypes';
 import { cloneDeep } from 'lodash';
 import {aSimpleExampleBuilder} from './SimpleExampleBuilder';
+import {aScalarsBuilder} from './ScalarsBuilder';
 
 export class NestedTypeExampleBuilder {
   constructor(private readonly obj = {nestedProp1: null, nestedProp2: null, scalar1: null} as DeepPartial<SchemaTypes.NestedTypeExample>) {
   }
 
   public withNestedProp1<P extends DeepPartial<SchemaTypes.SimpleExample>>(val: P | ((builder: ReturnType<typeof aSimpleExampleBuilder>) => ReturnType<typeof aSimpleExampleBuilder>)): NestedTypeExampleBuilder {
-    this.obj.nestedProp1 = typeof val === 'function' ? val(aSimpleExampleBuilder()).get() : val;
+    this.obj.nestedProp1 = typeof val === 'function' ? val(aSimpleExampleBuilder(this.obj.nestedProp1)).get() : val;
     return this;
   }
 
@@ -1098,8 +1100,8 @@ export class NestedTypeExampleBuilder {
     return this;
   }
 
-  public withScalar1<P extends DeepPartial<SchemaTypes.Scalars>>(val: P): NestedTypeExampleBuilder {
-    this.obj.scalar1 = val;
+  public withScalar1<P extends DeepPartial<SchemaTypes.Scalars>>(val: P | ((builder: ReturnType<typeof aScalarsBuilder>) => ReturnType<typeof aScalarsBuilder>)): NestedTypeExampleBuilder {
+    this.obj.scalar1 = typeof val === 'function' ? val(aScalarsBuilder(this.obj.scalar1)).get() : val;
     return this;
   }
 
